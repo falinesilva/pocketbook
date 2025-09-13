@@ -7,21 +7,31 @@
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body
-    class="flex flex-col justify-center items-center bg-cover bg-bottom min-h-screen"
+    class="flex flex-col justify-center items-center bg-cover bg-bottom min-h-screen font-serif"
     style="background-image: url('assets/images/bg.png')"
   >
     <div
-      class="w-[80%] h-[400px] bg-amber-600 rounded-lg p-6 flex justify-between flex-col"
+      class="flex justify-center mb-4 bg-amber-100 px-2 rounded-lg text-[32px] border-4 border-amber-600"
+    >
+      <h1>Pocketbook</h1>
+      <p class="text-xs">©</p>
+    </div>
+
+    <div
+      class="w-[80%] h-[400px] bg-amber-600 drop-shadow-md rounded-lg p-6 flex justify-between flex-col"
     >
       <nav>
         <ul
-          class="bg-amber-100 flex space-x-5 justify-center rounded-lg items-center"
+          class="bg-amber-100 font-bold flex space-x-5 justify-center rounded-lg items-center"
         >
           <li>
-            <a href="./due.html">Due</a>
+            <a href="./overview.html">Overview</a>
           </li>
           <li>
-            <a href="./spending.html">Spending</a>
+            <a href="./calendar.html">Calendar</a>
+          </li>
+          <li>
+            <a href="./receipts.html">Receipts</a>
           </li>
           <li>
             <a href="./bills.html">Bills</a>
@@ -36,7 +46,7 @@
       </nav>
       <div class="bg-amber-100 h-[260px] rounded-lg"></div>
       <footer
-        class="bg-amber-100 flex space-x-5 justify-center rounded-lg items-center"
+        class="bg-amber-100 flex space-x-5 justify-center rounded-lg items-center underline font-bold"
       >
         <hr />
         <a href="./settings.html">Settings</a>
