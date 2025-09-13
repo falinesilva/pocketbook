@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pocketbook</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      async function showView(file) {
+        const response = await fetch(file);
+        const html = await response.text();
+        document.getElementById("content").innerHTML = html;
+      }
+
+      window.onload = () => showView("Overview.html");
+    </script>
   </head>
   <body
     class="flex flex-col justify-center items-center bg-cover bg-bottom min-h-screen font-serif"
@@ -20,31 +29,18 @@
     <div
       class="w-[80%] h-[400px] bg-amber-600 drop-shadow-md rounded-lg p-6 flex justify-between flex-col"
     >
-      <nav>
-        <ul
-          class="bg-amber-100 font-bold flex space-x-5 justify-center rounded-lg items-center"
-        >
-          <li>
-            <a href="./overview.html">Overview</a>
-          </li>
-          <li>
-            <a href="./calendar.html">Calendar</a>
-          </li>
-          <li>
-            <a href="./receipts.html">Receipts</a>
-          </li>
-          <li>
-            <a href="./bills.html">Bills</a>
-          </li>
-          <li>
-            <a href="./debts.html">Debts</a>
-          </li>
-          <li>
-            <a href="./assets.html">Assets</a>
-          </li>
-        </ul>
-      </nav>
-      <div class="bg-amber-100 h-[260px] rounded-lg"></div>
+      <ul
+        class="bg-amber-100 font-bold flex space-x-5 justify-center rounded-lg items-center"
+      >
+        <li><button onclick="showView('onload.html')">Overview</button></li>
+        <li><button onclick="showView('calendar.html')">Calendar</button></li>
+        <li><button onclick="showView('receipts.html')">Receipts</button></li>
+        <li><button onclick="showView('bills.html')">Bills</button></li>
+        <li><button onclick="showView('debts.html')">Debts</button></li>
+        <li><button onclick="showView('assets.html')">Assets</button></li>
+      </ul>
+
+      <div id="content" class="bg-amber-100 h-[260px] rounded-lg"></div>
       <footer
         class="bg-amber-100 flex space-x-5 justify-center rounded-lg items-center underline font-bold"
       >
