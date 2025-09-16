@@ -5,57 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pocketbook</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="/js/nav.js"></script>
+    <script src="/js/ui.js"></script>
   </head>
   <body
     class="flex flex-col justify-center items-center bg-cover bg-bottom min-h-screen font-serif"
     style="background-image: url('assets/images/bg.png')"
   >
-    <div
-      class="flex justify-center mb-4 bg-amber-100 px-2 rounded-lg text-[32px] border-4 border-amber-600"
-    >
-      <h1>Pocketbook</h1>
-      <p class="text-xs">©</p>
-    </div>
+    <div id="logo"></div>
 
+    <!-- Backdrop -->
     <div
-      class="w-[800px] h-[550px] bg-amber-600 drop-shadow-md rounded-lg p-6 flex justify-between flex-col"
+      class="w-[640px] h-[480px] bg-amber-600 drop-shadow-md rounded-lg p-6 flex justify-between flex-col"
     >
-      <ul
-        class="bg-amber-100 font-bold flex space-x-5 justify-center rounded-lg items-center"
-      >
-        <li>
-          <button onclick="showView('/views/overview.html')">Overview</button>
-        </li>
-        <li><button onclick="showView('/views/bills.html')">Bills</button></li>
-        <li>
-          <button onclick="showView('/views/spending.html')">Spending</button>
-        </li>
-        <li><button onclick="showView('/views/debts.html')">Debts</button></li>
-        <li>
-          <button onclick="showView('/views/assets.html')">Assets</button>
-        </li>
-      </ul>
-
-      <div id="content" class="bg-amber-100 h-[400px] rounded-lg"></div>
-      <footer
-        class="bg-amber-100 flex space-x-5 justify-center rounded-lg items-center underline font-bold"
-      >
-        <hr />
-        <ul
-          class="bg-amber-100 font-bold flex space-x-5 justify-center rounded-lg items-center"
-        >
-          <li>
-            <button onclick="showView('/footer/settings.html')">
-              Settings
-            </button>
-          </li>
-          <li><button onclick="showView('/footer/help.html')">Help</button></li>
-          <li>
-            <button onclick="showView('./footer/about.html')">About</button>
-          </li>
-        </ul>
-      </footer>
+      <!-- Nav Bar -->
+      <div id="nav"></div>
+      <!-- Modules -->
+      <div id="content" class="bg-amber-100 h-[320px] rounded-lg"></div>
+      <!-- Footer -->
+      <div id="footer"></div>
     </div>
   </body>
 </html>
