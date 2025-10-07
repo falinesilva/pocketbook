@@ -5,24 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pocketbook</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="/js/ui.js"></script>
   </head>
   <body
-    class="flex flex-col justify-center items-center bg-cover bg-bottom min-h-screen font-serif"
-    style="background-image: url('assets/images/bg.png')"
+    class="flex flex-col justify-center items-center bg-cover bg-bottom min-h-screen font-serif bg-amber-950"
   >
-    <div id="logo"></div>
+    <div
+      id="logo"
+      class="flex justify-center mb-4 bg-amber-200 px-2 rounded-lg text-[32px] border-4 border-amber-600"
+    >
+      <h1>Pocketbook</h1>
+      <p class="text-xs">©</p>
+    </div>
 
-    <!-- Backdrop -->
     <div
       class="w-[640px] h-[480px] bg-amber-600 drop-shadow-md rounded-lg p-6 flex justify-between flex-col"
     >
-      <!-- Nav Bar -->
-      <div id="nav"></div>
-      <!-- Modules -->
-      <div id="content" class="bg-amber-100 h-[320px] rounded-lg"></div>
-      <!-- Footer -->
-      <div id="footer"></div>
+      <nav>
+        <ul
+          class="bg-amber-200 font-bold flex items-center justify-between rounded-lg px-36"
+        >
+          <li>
+            <button>Due</button>
+          </li>
+          <li>
+            <button>Paid</button>
+          </li>
+        </ul>
+      </nav>
+      <div class="bg-amber-200 h-[320px] rounded-lg overflow-auto">
+        <!-- Bills Start -->
+        <div class="flex justify-center px-4">
+          <table class="table-fixed min-w-full" id="bills-table">
+            <tr class="text-left">
+              <th>Name</th>
+              <th>Amount</th>
+              <th>Due Date</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </table>
+        </div>
+        <!-- Bills End -->
+      </div>
+
+      <footer
+        class="bg-amber-200 flex space-x-5 justify-center rounded-lg items-center underline font-bold"
+      >
+        <hr />
+        <ul
+          class="bg-amber-200 font-bold flex space-x-5 justify-center rounded-lg items-center"
+        >
+          <li>
+            <button>Settings</button>
+          </li>
+          <li><button>Help</button></li>
+          <li>
+            <button>About</button>
+          </li>
+        </ul>
+      </footer>
     </div>
+    <script src="/js/bills.js"></script>
   </body>
 </html>
