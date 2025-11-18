@@ -36,6 +36,7 @@ window.renderPayments = (id, data) => {
         <td class="text-left">${i.totalDue ?? "-"}</td>
         <td class="text-left px-4">${i.name}</td>
         <td class="text-right px-6">${i.timeToPay}</td>
+        </td>
       </tr>`;
   });
 };
