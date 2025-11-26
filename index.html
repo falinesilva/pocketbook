@@ -3,72 +3,173 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pocketbook</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="js/data.js"></script>
+    <title>Monthly Tracker</title>
   </head>
+  <body>
+    <h2>Review: Cash / Bills / Expenses / Debts</h2>
 
-  <body
-    class="flex flex-col justify-center items-center bg-cover bg-bottom min-h-screen bg-gray-800 font-normal"
-  >
-    <div
-      class="w-[640px] h-[680px] bg-slate-900 drop-shadow-md rounded-lg p-6 flex justify-between flex-col"
-    >
-      <nav>
-        <ul class="h-12 font-bold flex items-center justify-between rounded-lg">
-          <li>
-            <span
-              class="text-lg bg-gray-800 text-slate-200 active:bg-slate-800 hover:bg-slate-800 p-4 rounded-xl"
-            >
-              <!-- Placeholder -->
-              18-11-25
-            </span>
-          </li>
-          <li>
-            <button
-              class="text-lg bg-gray-800 active:bg-slate-800 text-slate-200 hover:bg-slate-800 p-4 rounded-xl"
-            >
-              <span>Cash:&nbsp;</span> R$150.000
-            </button>
-          </li>
-          <li>
-            <button
-              class="text-lg bg-gray-800 active:bg-slate-800 text-slate-200 hover:bg-slate-800 p-4 rounded-xl"
-            >
-              Due:&nbsp;<span class="text-yellow-200">R$700</span>
-            </button>
-          </li>
-        </ul>
-      </nav>
-
-      <div class="bg-slate-300 h-[520px] rounded-lg overflow-auto items-center">
-        <table id="payments" class="min-w-full table-auto mb-2 mt-4">
-          <tr>
-            <th class="text-left px-4">Date</th>
-            <th class="text-left">Price</th>
-            <th class="text-left px-4">Name</th>
-            <th class="text-right px-6">Time to pay</th>
-          </tr>
-        </table>
+    <div id="columns" style="display: flex; gap: 20px; align-items: flex-start">
+      <!-- Cash -->
+      <div>
+        <h3>Cash</h3>
+        <form id="incomeForm">
+          <input type="text" id="incomeName" placeholder="Name" required />
+          <input type="number" id="incomeValue" placeholder="Amount" required />
+          <button type="submit">Add</button>
+        </form>
+        <ul id="incomeList"></ul>
+        <p>Total Cash: <span id="incomeTotal">0</span></p>
       </div>
 
-      <footer
-        class="bg-slate-200 flex space-x-5 justify-center rounded-lg items-center underline font-bold"
-      >
-        <hr />
-        <ul
-          class="bg-slate-200 font-bold flex space-x-5 justify-center rounded-lg items-center"
-        >
-          <li><button>Settings</button></li>
-          <li><button>Help</button></li>
-          <li><button>About</button></li>
-        </ul>
-      </footer>
+      <!-- Bills -->
+      <div>
+        <h3>Bills</h3>
+        <form id="billsForm">
+          <input type="text" id="billsName" placeholder="Name" required />
+          <input type="number" id="billsValue" placeholder="Amount" required />
+          <button type="submit">Add</button>
+        </form>
+        <ul id="billsList"></ul>
+        <p>Total Bills: <span id="billsTotal">0</span></p>
+      </div>
+
+      <!-- Expenses -->
+      <div>
+        <h3>Expenses</h3>
+        <form id="expensesForm">
+          <input type="text" id="expensesName" placeholder="Name" required />
+          <input
+            type="number"
+            id="expensesValue"
+            placeholder="Amount"
+            required
+          />
+          <button type="submit">Add</button>
+        </form>
+        <ul id="expensesList"></ul>
+        <p>Total Expenses: <span id="expensesTotal">0</span></p>
+      </div>
+
+      <!-- Debts -->
+      <div>
+        <h3>Debts</h3>
+        <form id="debtsForm">
+          <input type="text" id="debtsName" placeholder="Name" required />
+          <input type="number" id="debtsValue" placeholder="Amount" required />
+          <button type="submit">Add</button>
+        </form>
+        <ul id="debtsList"></ul>
+        <p>Total Debts: <span id="debtsTotal">0</span></p>
+      </div>
     </div>
+
+    <hr />
+
+    <p>Final Total (Cash - Bills - Expenses): <span id="finalTotal">0</span></p>
+    <p>Subtotal (After Debts): <span id="subtotal">0</span></p>
+
+    <button id="exportBtn" style="position: fixed; bottom: 10px; right: 10px">
+      Export Data
+    </button>
+
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        renderPayments("payments", payments);
+      const categories = ["income", "bills", "expenses", "debts"];
+      const data = JSON.parse(localStorage.getItem("monthlyData")) || {
+        income: [],
+        bills: [],
+        expenses: [],
+        debts: [],
+      };
+
+      function updateUI() {
+        categories.forEach((cat) => {
+          const list = document.getElementById(`${cat}List`);
+          list.innerHTML = "";
+
+          data[cat].forEach((item, index) => {
+            const li = document.createElement("li");
+            li.textContent = `${item.name}: ${item.value}`;
+            const editBtn = document.createElement("button");
+            editBtn.textContent = "Edit";
+            editBtn.onclick = () => {
+              document.getElementById(`${cat}Name`).value = item.name;
+              document.getElementById(`${cat}Value`).value = item.value;
+              data[cat].splice(index, 1);
+              saveData();
+              updateUI();
+            };
+            const removeBtn = document.createElement("button");
+            removeBtn.textContent = "Remove";
+            removeBtn.onclick = () => {
+              data[cat].splice(index, 1);
+              saveData();
+              updateUI();
+            };
+            li.append(" ", editBtn, " ", removeBtn);
+            list.appendChild(li);
+          });
+
+          // calculate total per category
+          const total = data[cat].reduce((sum, i) => sum + Number(i.value), 0);
+          document.getElementById(`${cat}Total`).textContent = total.toFixed(2);
+        });
+
+        const cash = sum("income");
+        const bills = sum("bills");
+        const expenses = sum("expenses");
+        const debts = sum("debts");
+
+        const final = cash - (bills + expenses);
+        const subtotal = final - debts;
+
+        document.getElementById("finalTotal").textContent = final.toFixed(2);
+        document.getElementById("subtotal").textContent = subtotal.toFixed(2);
+      }
+
+      function sum(cat) {
+        return data[cat].reduce((s, i) => s + Number(i.value), 0);
+      }
+
+      function saveData() {
+        localStorage.setItem("monthlyData", JSON.stringify(data));
+      }
+
+      categories.forEach((cat) => {
+        document
+          .getElementById(`${cat}Form`)
+          .addEventListener("submit", (e) => {
+            e.preventDefault();
+            const name = document.getElementById(`${cat}Name`).value.trim();
+            const value = Number(document.getElementById(`${cat}Value`).value);
+            if (name && !isNaN(value)) {
+              data[cat].push({ name, value });
+              document.getElementById(`${cat}Form`).reset();
+              saveData();
+              updateUI();
+            }
+          });
       });
+
+      document.getElementById("exportBtn").onclick = () => {
+        let text = "";
+        categories.forEach((cat) => {
+          text += `${cat.toUpperCase()}:\n`;
+          data[cat].forEach((i) => (text += `${i.name}: ${i.value}\n`));
+          text += `Total ${cat}: ${sum(cat)}\n\n`;
+        });
+
+        const final = sum("income") - (sum("bills") + sum("expenses"));
+        const subtotal = final - sum("debts");
+
+        text += `Final Total: ${final}\nSubtotal (After Debts): ${subtotal}`;
+        const blob = new Blob([text], { type: "text/plain" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "monthly_data.txt";
+        link.click();
+      };
+
+      updateUI();
     </script>
   </body>
 </html>
