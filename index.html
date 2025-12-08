@@ -9,9 +9,36 @@
   </head>
 
   <body class="p-4 bg-cyan-950 text-white">
-    <h2 class="text-xl font-bold mb-4">
-      Review: Cash / Bills / Expenses / Debts
-    </h2>
+    <h2 class="text-xl font-bold mb-4">Pocketbook Finance</h2>
+
+    <!-- NEW: Month + Year dropdowns -->
+    <div class="flex gap-2 mb-4">
+      <!-- NEW -->
+      <select id="reportMonth" class="border p-1 text-black">
+        <!-- NEW -->
+        <option value="">Month</option>
+        <option>January</option>
+        <option>February</option>
+        <option>March</option>
+        <option>April</option>
+        <option>May</option>
+        <option>June</option>
+        <option>July</option>
+        <option>August</option>
+        <option>September</option>
+        <option>October</option>
+        <option>November</option>
+        <option>December</option>
+      </select>
+
+      <select id="reportYear" class="border p-1 text-black">
+        <!-- NEW -->
+        <option value="">Year</option>
+        <option>2024</option>
+        <option>2025</option>
+        <option>2026</option>
+      </select>
+    </div>
 
     <div id="columns" class="flex flex-col gap-6">
       <!-- Cash -->
@@ -23,14 +50,14 @@
             id="incomeName"
             placeholder="Name"
             required
-            class="border p-1 w-32"
+            class="border p-1 w-32 text-black"
           />
           <input
             type="number"
             id="incomeValue"
             placeholder="Amount"
             required
-            class="border p-1 w-24"
+            class="border p-1 w-24 text-black"
           />
           <button type="submit" class="px-2 py-1 border">Add</button>
         </form>
@@ -47,14 +74,14 @@
             id="billsName"
             placeholder="Name"
             required
-            class="border p-1 w-32"
+            class="border p-1 w-32 text-black"
           />
           <input
             type="number"
             id="billsValue"
             placeholder="Amount"
             required
-            class="border p-1 w-24"
+            class="border p-1 w-24 text-black"
           />
           <button type="submit" class="px-2 py-1 border">Add</button>
         </form>
@@ -71,14 +98,14 @@
             id="expensesName"
             placeholder="Name"
             required
-            class="border p-1 w-32"
+            class="border p-1 w-32 text-black"
           />
           <input
             type="number"
             id="expensesValue"
             placeholder="Amount"
             required
-            class="border p-1 w-24"
+            class="border p-1 w-24 text-black"
           />
           <button type="submit" class="px-2 py-1 border">Add</button>
         </form>
@@ -95,14 +122,14 @@
             id="debtsName"
             placeholder="Name"
             required
-            class="border p-1 w-32"
+            class="border p-1 w-32 text-black"
           />
           <input
             type="number"
             id="debtsValue"
             placeholder="Amount"
             required
-            class="border p-1 w-24"
+            class="border p-1 w-24 text-black"
           />
           <button type="submit" class="px-2 py-1 border">Add</button>
         </form>
@@ -116,12 +143,12 @@
     <p>Final Total (Cash - Bills - Expenses): <span id="finalTotal">0</span></p>
     <p>Subtotal (After Debts): <span id="subtotal">0</span></p>
 
-    <!-- Export-->
+    <!-- WhatsApp Share -->
     <button
       id="exportBtn"
       class="fixed bottom-4 right-4 px-4 py-2 border bg-white text-black"
     >
-      Export Results
+      Share via WhatsApp
     </button>
 
     <!-- JavaScript -->
@@ -209,6 +236,12 @@
 
       document.getElementById("exportBtn").onclick = () => {
         let text = "";
+
+        const month = document.getElementById("reportMonth").value;
+        const year = document.getElementById("reportYear").value;
+
+        text += `Pocketbook Report for ${month} ${year}\n\n`;
+
         categories.forEach((cat) => {
           text += `${cat.toUpperCase()}:\n`;
           data[cat].forEach((i) => (text += `${i.name}: ${i.value}\n`));
@@ -220,11 +253,8 @@
 
         text += `Final Total: ${final}\nSubtotal (After Debts): ${subtotal}`;
 
-        const blob = new Blob([text], { type: "text/plain" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "monthly_data.txt";
-        link.click();
+        const url = "https://wa.me/?text=" + encodeURIComponent(text);
+        window.open(url, "_blank");
       };
 
       updateUI();
