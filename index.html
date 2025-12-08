@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Monthly Tracker</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="p-4 bg-cyan-950 text-white">
+    <h2 class="text-xl font-bold mb-4">
+      Review: Cash / Bills / Expenses / Debts
+    </h2>
+
+    <div id="columns" class="flex flex-col gap-6">
+      <!-- Cash -->
+      <div>
+        <h3 class="font-semibold mb-2">Cash</h3>
+        <form id="incomeForm" class="flex gap-2 mb-2">
+          <input
+            type="text"
+            id="incomeName"
+            placeholder="Name"
+            required
+            class="border p-1 w-32"
+          />
+          <input
+            type="number"
+            id="incomeValue"
+            placeholder="Amount"
+            required
+            class="border p-1 w-24"
+          />
+          <button type="submit" class="px-2 py-1 border">Add</button>
+        </form>
+        <ul id="incomeList" class="space-y-1"></ul>
+        <p>Total Cash: <span id="incomeTotal">0</span></p>
+      </div>
+
+      <!-- Bills -->
+      <div>
+        <h3 class="font-semibold mb-2">Bills</h3>
+        <form id="billsForm" class="flex gap-2 mb-2">
+          <input
+            type="text"
+            id="billsName"
+            placeholder="Name"
+            required
+            class="border p-1 w-32"
+          />
+          <input
+            type="number"
+            id="billsValue"
+            placeholder="Amount"
+            required
+            class="border p-1 w-24"
+          />
+          <button type="submit" class="px-2 py-1 border">Add</button>
+        </form>
+        <ul id="billsList" class="space-y-1"></ul>
+        <p>Total Bills: <span id="billsTotal">0</span></p>
+      </div>
+
+      <!-- Expenses -->
+      <div>
+        <h3 class="font-semibold mb-2">Expenses</h3>
+        <form id="expensesForm" class="flex gap-2 mb-2">
+          <input
+            type="text"
+            id="expensesName"
+            placeholder="Name"
+            required
+            class="border p-1 w-32"
+          />
+          <input
+            type="number"
+            id="expensesValue"
+            placeholder="Amount"
+            required
+            class="border p-1 w-24"
+          />
+          <button type="submit" class="px-2 py-1 border">Add</button>
+        </form>
+        <ul id="expensesList" class="space-y-1"></ul>
+        <p>Total Expenses: <span id="expensesTotal">0</span></p>
+      </div>
+
+      <!-- Debts -->
+      <div>
+        <h3 class="font-semibold mb-2">Debts</h3>
+        <form id="debtsForm" class="flex gap-2 mb-2">
+          <input
+            type="text"
+            id="debtsName"
+            placeholder="Name"
+            required
+            class="border p-1 w-32"
+          />
+          <input
+            type="number"
+            id="debtsValue"
+            placeholder="Amount"
+            required
+            class="border p-1 w-24"
+          />
+          <button type="submit" class="px-2 py-1 border">Add</button>
+        </form>
+        <ul id="debtsList" class="space-y-1"></ul>
+        <p>Total Debts: <span id="debtsTotal">0</span></p>
+      </div>
+    </div>
+
+    <hr class="my-4" />
+
+    <p>Final Total (Cash - Bills - Expenses): <span id="finalTotal">0</span></p>
+    <p>Subtotal (After Debts): <span id="subtotal">0</span></p>
+
+    <!-- Export-->
+    <!-- Export (now WhatsApp share) -->
+    <button
+      id="exportBtn"
+      class="fixed bottom-4 right-4 px-4 py-2 border bg-white text-black"
+    >
+      Share via WhatsApp
+    </button>
+
+    <!-- JavaScript -->
+    <script>
+      const categories = ["income", "bills", "expenses", "debts"];
+      const data = JSON.parse(localStorage.getItem("monthlyData")) || {
+        income: [],
+        bills: [],
+        expenses: [],
+        debts: [],
+      };
+
+      function updateUI() {
+        categories.forEach((cat) => {
+          const list = document.getElementById(`${cat}List`);
+          list.innerHTML = "";
+
+          data[cat].forEach((item, index) => {
+            const li = document.createElement("li");
+            li.textContent = `${item.name}: ${item.value}`;
+
+            const editBtn = document.createElement("button");
+            editBtn.textContent = "Edit";
+            editBtn.className = "ml-2 border px-1";
+            editBtn.onclick = () => {
+              document.getElementById(`${cat}Name`).value = item.name;
+              document.getElementById(`${cat}Value`).value = item.value;
+              data[cat].splice(index, 1);
+              saveData();
+              updateUI();
+            };
+
+            const removeBtn = document.createElement("button");
+            removeBtn.textContent = "Remove";
+            removeBtn.className = "ml-2 border px-1";
+            removeBtn.onclick = () => {
+              data[cat].splice(index, 1);
+              saveData();
+              updateUI();
+            };
+
+            li.append(" ", editBtn, " ", removeBtn);
+            list.appendChild(li);
+          });
+
+          const total = data[cat].reduce((s, i) => s + Number(i.value), 0);
+          document.getElementById(`${cat}Total`).textContent = total.toFixed(2);
+        });
+
+        const cash = sum("income");
+        const bills = sum("bills");
+        const expenses = sum("expenses");
+        const debts = sum("debts");
+
+        const final = cash - (bills + expenses);
+        const subtotal = final - debts;
+
+        document.getElementById("finalTotal").textContent = final.toFixed(2);
+        document.getElementById("subtotal").textContent = subtotal.toFixed(2);
+      }
+
+      function sum(cat) {
+        return data[cat].reduce((s, i) => s + Number(i.value), 0);
+      }
+
+      function saveData() {
+        localStorage.setItem("monthlyData", JSON.stringify(data));
+      }
+
+      categories.forEach((cat) => {
+        document
+          .getElementById(`${cat}Form`)
+          .addEventListener("submit", (e) => {
+            e.preventDefault();
+            const name = document.getElementById(`${cat}Name`).value.trim();
+            const value = Number(document.getElementById(`${cat}Value`).value);
+            if (name && !isNaN(value)) {
+              data[cat].push({ name, value });
+              document.getElementById(`${cat}Form`).reset();
+              saveData();
+              updateUI();
+            }
+          });
+      });
+
+      document.getElementById("exportBtn").onclick = () => {
+        let text = "";
+        categories.forEach((cat) => {
+          text += `${cat.toUpperCase()}:\n`;
+          data[cat].forEach((i) => (text += `${i.name}: ${i.value}\n`));
+          text += `Total ${cat}: ${sum(cat)}\n\n`;
+        });
+
+        const final = sum("income") - (sum("bills") + sum("expenses"));
+        const subtotal = final - sum("debts");
+
+        text += `Final Total: ${final}\nSubtotal (After Debts): ${subtotal}`;
+
+        const blob = new Blob([text], { type: "text/plain" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "monthly_data.txt";
+        link.click();
+      };
+
+      updateUI();
+    </script>
+  </body>
+</html>
