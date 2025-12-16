@@ -8,256 +8,257 @@
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
 
-  <body class="p-4 bg-cyan-950 text-white">
-    <h2 class="text-xl font-bold mb-4">Pocketbook Finance</h2>
+  <body class="p-4 cursor-default bg-slate-800 text-white flex justify-center">
+    <div class="w-full max-w-xl p-4 m-6 bg-slate-900 rounded-xl">
+      <div class="flex h-8 mb-4 items-center justify-between">
+        <!-- TODO: Add link to github -->
+        <p class="text-sm cursor-default">PB-alpha-v1</p>
+        <p class="text-xl font-semibold italic">December 2025</p>
 
-    <!-- NEW: Month + Year dropdowns -->
-    <div class="flex gap-2 mb-4">
-      <!-- NEW -->
-      <select id="reportMonth" class="border p-1 text-black">
-        <!-- NEW -->
-        <option value="">Month</option>
-        <option>January</option>
-        <option>February</option>
-        <option>March</option>
-        <option>April</option>
-        <option>May</option>
-        <option>June</option>
-        <option>July</option>
-        <option>August</option>
-        <option>September</option>
-        <option>October</option>
-        <option>November</option>
-        <option>December</option>
-      </select>
+        <button id="exportBtn" class="w-24 bg-transparent cursor-pointer">
+          <img src="/assets/zap.png" alt="" aria-hidden="true" />
+        </button>
+      </div>
+      <hr class="border-t border-gray-300 my-4" />
 
-      <select id="reportYear" class="border p-1 text-black">
-        <!-- NEW -->
-        <option value="">Year</option>
-        <option>2024</option>
-        <option>2025</option>
-        <option>2026</option>
-      </select>
-    </div>
+      <p>TOTAL (Cash - Bills - Expenses) = <span id="finalTotal">0</span></p>
+      <p>SUBTOTAL (After Debts): <span id="subtotal">0</span></p>
 
-    <div id="columns" class="flex flex-col gap-6">
-      <!-- Cash -->
-      <div>
-        <h3 class="font-semibold mb-2">Cash</h3>
-        <form id="incomeForm" class="flex gap-2 mb-2">
-          <input
-            type="text"
-            id="incomeName"
-            placeholder="Name"
-            required
-            class="border p-1 w-32 text-black"
-          />
-          <input
-            type="number"
-            id="incomeValue"
-            placeholder="Amount"
-            required
-            class="border p-1 w-24 text-black"
-          />
-          <button type="submit" class="px-2 py-1 border">Add</button>
-        </form>
-        <ul id="incomeList" class="space-y-1"></ul>
-        <p>Total Cash: <span id="incomeTotal">0</span></p>
+      <hr class="border-t border-gray-300 my-4" />
+
+      <div id="columns" class="flex flex-col gap-6">
+        <!-- Cash -->
+        <div>
+          <h3 class="font-semibold mb-2">Cash</h3>
+          <form id="incomeForm" class="flex gap-2 mb-2">
+            <input
+              type="text"
+              id="incomeName"
+              placeholder="Name"
+              required
+              class="border p-1 w-32 text-black"
+            />
+            <input
+              type="number"
+              id="incomeValue"
+              placeholder="Amount"
+              required
+              class="border p-1 w-24 text-black"
+            />
+            <button type="submit" class="px-2 py-1 border">Add</button>
+          </form>
+          <ul id="incomeList" class="space-y-1"></ul>
+          <p>Total Cash: <span id="incomeTotal">0</span></p>
+        </div>
+
+        <!-- Bills -->
+        <div>
+          <h3 class="font-semibold mb-2">Bills</h3>
+          <form id="billsForm" class="flex gap-2 mb-2">
+            <input
+              type="text"
+              id="billsName"
+              placeholder="Name"
+              required
+              class="border p-1 w-32 text-black"
+            />
+            <input
+              type="number"
+              id="billsValue"
+              placeholder="Amount"
+              required
+              class="border p-1 w-24 text-black"
+            />
+            <button type="submit" class="px-2 py-1 border">Add</button>
+          </form>
+          <ul id="billsList" class="space-y-1"></ul>
+          <p>Total Bills: <span id="billsTotal">0</span></p>
+        </div>
+
+        <!-- Expenses -->
+        <div>
+          <h3 class="font-semibold mb-2">Expenses</h3>
+          <form id="expensesForm" class="flex gap-2 mb-2">
+            <input
+              type="text"
+              id="expensesName"
+              placeholder="Name"
+              required
+              class="border p-1 w-32 text-black"
+            />
+            <input
+              type="number"
+              id="expensesValue"
+              placeholder="Amount"
+              required
+              class="border p-1 w-24 text-black"
+            />
+            <button type="submit" class="px-2 py-1 border">Add</button>
+          </form>
+          <ul id="expensesList" class="space-y-1"></ul>
+          <p>Total Expenses: <span id="expensesTotal">0</span></p>
+        </div>
+
+        <!-- Debts -->
+        <div>
+          <h3 class="font-semibold mb-2">Debts</h3>
+          <form id="debtsForm" class="flex gap-2 mb-2">
+            <input
+              type="text"
+              id="debtsName"
+              placeholder="Name"
+              required
+              class="border p-1 w-32 text-black"
+            />
+            <input
+              type="number"
+              id="debtsValue"
+              placeholder="Amount"
+              required
+              class="border p-1 w-24 text-black"
+            />
+            <button type="submit" class="px-2 py-1 border">Add</button>
+          </form>
+          <ul id="debtsList" class="space-y-1"></ul>
+          <p>Total Debts: <span id="debtsTotal">0</span></p>
+        </div>
       </div>
 
-      <!-- Bills -->
-      <div>
-        <h3 class="font-semibold mb-2">Bills</h3>
-        <form id="billsForm" class="flex gap-2 mb-2">
-          <input
-            type="text"
-            id="billsName"
-            placeholder="Name"
-            required
-            class="border p-1 w-32 text-black"
-          />
-          <input
-            type="number"
-            id="billsValue"
-            placeholder="Amount"
-            required
-            class="border p-1 w-24 text-black"
-          />
-          <button type="submit" class="px-2 py-1 border">Add</button>
-        </form>
-        <ul id="billsList" class="space-y-1"></ul>
-        <p>Total Bills: <span id="billsTotal">0</span></p>
-      </div>
+      <script>
+        const categories = ["income", "bills", "expenses", "debts"];
+        const data = JSON.parse(localStorage.getItem("monthlyData")) || {
+          income: [],
+          bills: [],
+          expenses: [],
+          debts: [],
+        };
 
-      <!-- Expenses -->
-      <div>
-        <h3 class="font-semibold mb-2">Expenses</h3>
-        <form id="expensesForm" class="flex gap-2 mb-2">
-          <input
-            type="text"
-            id="expensesName"
-            placeholder="Name"
-            required
-            class="border p-1 w-32 text-black"
-          />
-          <input
-            type="number"
-            id="expensesValue"
-            placeholder="Amount"
-            required
-            class="border p-1 w-24 text-black"
-          />
-          <button type="submit" class="px-2 py-1 border">Add</button>
-        </form>
-        <ul id="expensesList" class="space-y-1"></ul>
-        <p>Total Expenses: <span id="expensesTotal">0</span></p>
-      </div>
+        function updateUI() {
+          categories.forEach((cat) => {
+            const list = document.getElementById(`${cat}List`);
+            list.innerHTML = "";
 
-      <!-- Debts -->
-      <div>
-        <h3 class="font-semibold mb-2">Debts</h3>
-        <form id="debtsForm" class="flex gap-2 mb-2">
-          <input
-            type="text"
-            id="debtsName"
-            placeholder="Name"
-            required
-            class="border p-1 w-32 text-black"
-          />
-          <input
-            type="number"
-            id="debtsValue"
-            placeholder="Amount"
-            required
-            class="border p-1 w-24 text-black"
-          />
-          <button type="submit" class="px-2 py-1 border">Add</button>
-        </form>
-        <ul id="debtsList" class="space-y-1"></ul>
-        <p>Total Debts: <span id="debtsTotal">0</span></p>
-      </div>
-    </div>
+            data[cat].forEach((item, index) => {
+              const li = document.createElement("li");
+              li.textContent = `${item.name}: ${item.value}`;
 
-    <hr class="my-4" />
+              if (item.paid) {
+                li.classList.add("italic", "line-through", "opacity-70");
+              }
 
-    <p>Final Total (Cash - Bills - Expenses): <span id="finalTotal">0</span></p>
-    <p>Subtotal (After Debts): <span id="subtotal">0</span></p>
+              const editBtn = document.createElement("button");
+              editBtn.textContent = "Edit";
+              editBtn.className = "border px-1";
 
-    <!-- WhatsApp Share -->
-    <button
-      id="exportBtn"
-      class="fixed bottom-4 right-4 px-4 py-2 border bg-white text-black"
-    >
-      Share via WhatsApp
-    </button>
+              editBtn.onclick = () => {
+                document.getElementById(`${cat}Name`).value = item.name;
+                document.getElementById(`${cat}Value`).value = item.value;
+                data[cat].splice(index, 1);
+                saveData();
+                updateUI();
+              };
 
-    <!-- JavaScript -->
-    <script>
-      const categories = ["income", "bills", "expenses", "debts"];
-      const data = JSON.parse(localStorage.getItem("monthlyData")) || {
-        income: [],
-        bills: [],
-        expenses: [],
-        debts: [],
-      };
+              const removeBtn = document.createElement("button");
+              removeBtn.textContent = "Remove";
+              removeBtn.className = "border px-1";
 
-      function updateUI() {
-        categories.forEach((cat) => {
-          const list = document.getElementById(`${cat}List`);
-          list.innerHTML = "";
+              removeBtn.onclick = () => {
+                data[cat].splice(index, 1);
+                saveData();
+                updateUI();
+              };
 
-          data[cat].forEach((item, index) => {
-            const li = document.createElement("li");
-            li.textContent = `${item.name}: ${item.value}`;
+              const paidBtn = document.createElement("button");
+              paidBtn.textContent = item.paid ? "Unpaid" : "Paid";
+              paidBtn.className = "border px-1";
 
-            const editBtn = document.createElement("button");
-            editBtn.textContent = "Edit";
-            editBtn.className = "ml-2 border px-1";
-            editBtn.onclick = () => {
-              document.getElementById(`${cat}Name`).value = item.name;
-              document.getElementById(`${cat}Value`).value = item.value;
-              data[cat].splice(index, 1);
-              saveData();
-              updateUI();
-            };
+              paidBtn.onclick = () => {
+                item.paid = !item.paid;
+                saveData();
+                updateUI();
+              };
 
-            const removeBtn = document.createElement("button");
-            removeBtn.textContent = "Remove";
-            removeBtn.className = "ml-2 border px-1";
-            removeBtn.onclick = () => {
-              data[cat].splice(index, 1);
-              saveData();
-              updateUI();
-            };
+              const btnBox = document.createElement("span");
+              btnBox.className = "float-right space-x-2";
+              btnBox.append(editBtn, removeBtn, paidBtn);
 
-            li.append(" ", editBtn, " ", removeBtn);
-            list.appendChild(li);
+              li.append(btnBox);
+              list.appendChild(li);
+            });
+
+            const total = data[cat]
+              .filter((i) => !i.paid)
+              .reduce((s, i) => s + Number(i.value), 0);
+
+            document.getElementById(`${cat}Total`).textContent =
+              total.toFixed(2);
           });
 
-          const total = data[cat].reduce((s, i) => s + Number(i.value), 0);
-          document.getElementById(`${cat}Total`).textContent = total.toFixed(2);
-        });
+          const cash = sum("income");
+          const bills = sum("bills");
+          const expenses = sum("expenses");
+          const debts = sum("debts");
 
-        const cash = sum("income");
-        const bills = sum("bills");
-        const expenses = sum("expenses");
-        const debts = sum("debts");
+          const final = cash - (bills + expenses);
+          const subtotal = final - debts;
 
-        const final = cash - (bills + expenses);
-        const subtotal = final - debts;
+          document.getElementById("finalTotal").textContent = final.toFixed(2);
+          document.getElementById("subtotal").textContent = subtotal.toFixed(2);
+        }
 
-        document.getElementById("finalTotal").textContent = final.toFixed(2);
-        document.getElementById("subtotal").textContent = subtotal.toFixed(2);
-      }
+        function sum(cat) {
+          return data[cat]
+            .filter((i) => !i.paid)
+            .reduce((s, i) => s + Number(i.value), 0);
+        }
 
-      function sum(cat) {
-        return data[cat].reduce((s, i) => s + Number(i.value), 0);
-      }
-
-      function saveData() {
-        localStorage.setItem("monthlyData", JSON.stringify(data));
-      }
-
-      categories.forEach((cat) => {
-        document
-          .getElementById(`${cat}Form`)
-          .addEventListener("submit", (e) => {
-            e.preventDefault();
-            const name = document.getElementById(`${cat}Name`).value.trim();
-            const value = Number(document.getElementById(`${cat}Value`).value);
-            if (name && !isNaN(value)) {
-              data[cat].push({ name, value });
-              document.getElementById(`${cat}Form`).reset();
-              saveData();
-              updateUI();
-            }
-          });
-      });
-
-      document.getElementById("exportBtn").onclick = () => {
-        let text = "";
-
-        const month = document.getElementById("reportMonth").value;
-        const year = document.getElementById("reportYear").value;
-
-        text += `Pocketbook Report for ${month} ${year}\n\n`;
+        function saveData() {
+          localStorage.setItem("monthlyData", JSON.stringify(data));
+        }
 
         categories.forEach((cat) => {
-          text += `${cat.toUpperCase()}:\n`;
-          data[cat].forEach((i) => (text += `${i.name}: ${i.value}\n`));
-          text += `Total ${cat}: ${sum(cat)}\n\n`;
+          document
+            .getElementById(`${cat}Form`)
+            .addEventListener("submit", (e) => {
+              e.preventDefault();
+              const name = document.getElementById(`${cat}Name`).value.trim();
+              const value = Number(
+                document.getElementById(`${cat}Value`).value
+              );
+              if (name && !isNaN(value)) {
+                data[cat].push({ name, value });
+                document.getElementById(`${cat}Form`).reset();
+                saveData();
+                updateUI();
+              }
+            });
         });
 
-        const final = sum("income") - (sum("bills") + sum("expenses"));
-        const subtotal = final - sum("debts");
+        document.getElementById("exportBtn").onclick = () => {
+          let text = "";
 
-        text += `Final Total: ${final}\nSubtotal (After Debts): ${subtotal}`;
+          const month = document.getElementById("reportMonth").value;
+          const year = document.getElementById("reportYear").value;
 
-        const url = "https://wa.me/?text=" + encodeURIComponent(text);
-        window.open(url, "_blank");
-      };
+          text += `Pocketbook Report for ${month} ${year}\n\n`;
 
-      updateUI();
-    </script>
+          categories.forEach((cat) => {
+            text += `${cat.toUpperCase()}:\n`;
+            data[cat].forEach((i) => (text += `${i.name}: ${i.value}\n`));
+            text += `Total ${cat}: ${sum(cat)}\n\n`;
+          });
+
+          const final = sum("income") - (sum("bills") + sum("expenses"));
+          const subtotal = final - sum("debts");
+
+          text += `Final Total: ${final}\nSubtotal (After Debts): ${subtotal}`;
+
+          const url = "https://wa.me/?text=" + encodeURIComponent(text);
+          window.open(url, "_blank");
+        };
+
+        updateUI();
+      </script>
+    </div>
   </body>
 </html>
