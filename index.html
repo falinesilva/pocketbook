@@ -27,31 +27,29 @@
       <hr class="border-t border-gray-300 my-4" />
 
       <div id="columns" class="flex flex-col gap-6">
-        <!-- Cash -->
         <div>
           <h3 class="font-semibold mb-2">Cash</h3>
-          <form id="incomeForm" class="flex gap-2 mb-2">
+          <form id="cashForm" class="flex gap-2 mb-2">
             <input
               type="text"
-              id="incomeName"
+              id="cashName"
               placeholder="Name"
               required
               class="border p-1 w-32 text-black"
             />
             <input
               type="number"
-              id="incomeValue"
+              id="cashValue"
               placeholder="Amount"
               required
               class="border p-1 w-24 text-black"
             />
             <button type="submit" class="px-2 py-1 border">Add</button>
           </form>
-          <ul id="incomeList" class="space-y-1"></ul>
-          <p>Total Cash: <span id="incomeTotal">0</span></p>
+          <ul id="cashList" class="space-y-1"></ul>
+          <p>Total Cash: <span id="cashTotal">0</span></p>
         </div>
 
-        <!-- Bills -->
         <div>
           <h3 class="font-semibold mb-2">Bills</h3>
           <form id="billsForm" class="flex gap-2 mb-2">
@@ -75,7 +73,6 @@
           <p>Total Bills: <span id="billsTotal">0</span></p>
         </div>
 
-        <!-- Expenses -->
         <div>
           <h3 class="font-semibold mb-2">Expenses</h3>
           <form id="expensesForm" class="flex gap-2 mb-2">
@@ -99,7 +96,6 @@
           <p>Total Expenses: <span id="expensesTotal">0</span></p>
         </div>
 
-        <!-- Debts -->
         <div>
           <h3 class="font-semibold mb-2">Debts</h3>
           <form id="debtsForm" class="flex gap-2 mb-2">
@@ -125,9 +121,9 @@
       </div>
 
       <script>
-        const categories = ["income", "bills", "expenses", "debts"];
+        const categories = ["cash", "bills", "expenses", "debts"];
         const data = JSON.parse(localStorage.getItem("monthlyData")) || {
-          income: [],
+          cash: [],
           bills: [],
           expenses: [],
           debts: [],
@@ -145,7 +141,7 @@
               if (item.paid) {
                 li.classList.add("italic", "line-through", "opacity-70");
               }
-
+              // TODO: Remove 'Paid' btn from Cash section
               const editBtn = document.createElement("button");
               editBtn.textContent = "Edit";
               editBtn.className = "border px-1";
@@ -194,7 +190,7 @@
               total.toFixed(2);
           });
 
-          const cash = sum("income");
+          const cash = sum("cash");
           const bills = sum("bills");
           const expenses = sum("expenses");
           const debts = sum("debts");
@@ -237,10 +233,9 @@
         document.getElementById("exportBtn").onclick = () => {
           let text = "";
 
-          const month = document.getElementById("reportMonth").value;
-          const year = document.getElementById("reportYear").value;
+          const d = new Date().toDateString();
 
-          text += `Pocketbook Report for ${month} ${year}\n\n`;
+          text += `Pocketbook Report for ${d}\n\n`;
 
           categories.forEach((cat) => {
             text += `${cat.toUpperCase()}:\n`;
@@ -248,7 +243,7 @@
             text += `Total ${cat}: ${sum(cat)}\n\n`;
           });
 
-          const final = sum("income") - (sum("bills") + sum("expenses"));
+          const final = sum("cash") - (sum("bills") + sum("expenses"));
           const subtotal = final - sum("debts");
 
           text += `Final Total: ${final}\nSubtotal (After Debts): ${subtotal}`;
