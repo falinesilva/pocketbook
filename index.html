@@ -3,257 +3,325 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Monthly Tracker</title>
+    <title>Monthly Snapshot</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      @media print {
+        button,
+        input,
+        select,
+        form {
+          display: none !important;
+        }
+
+        body {
+          background: white !important;
+          color: black !important;
+        }
+
+        section {
+          break-inside: avoid;
+        }
+      }
+    </style>
   </head>
 
-  <body class="p-4 cursor-default bg-slate-800 text-white flex justify-center">
-    <div class="w-full max-w-xl p-4 m-6 bg-slate-900 rounded-xl">
-      <div class="flex h-8 mb-4 items-center justify-between">
-        <!-- TODO: Add link to github -->
-        <p class="text-sm cursor-default">PB-alpha-v1</p>
-        <p class="text-xl font-semibold italic">December 2025</p>
+  <body class="bg-slate-800 text-slate-100 h-screen overflow-hidden">
+    <div class="h-full flex justify-center">
+      <div class="w-full max-w-xl h-full bg-slate-900 flex flex-col">
+        <!-- HEADER -->
+        <div
+          class="p-4 flex justify-between items-center border-b border-slate-700"
+        >
+          <div id="titleContainer" class="flex items-center gap-2"></div>
 
-        <button id="exportBtn" class="w-24 bg-transparent cursor-pointer">
-          <img src="/assets/zap.png" alt="" aria-hidden="true" />
-        </button>
+          <button
+            onclick="window.print()"
+            class="text-sm border px-3 py-1 text-slate-300"
+          >
+            Export PDF
+          </button>
+        </div>
+
+        <!-- SCROLLABLE CONTENT -->
+        <div class="flex-1 overflow-y-auto p-4 space-y-6">
+          <!-- CASH -->
+          <section>
+            <div class="flex justify-between items-center mb-2">
+              <h3 class="text-sm font-medium">Cash</h3>
+              <button data-toggle="cash" class="text-slate-400">−</button>
+            </div>
+            <div id="cashSection">
+              <form id="cashForm" class="flex gap-2 mb-2">
+                <input
+                  id="cashName"
+                  placeholder="Source"
+                  class="w-full p-1 text-black"
+                  required
+                />
+                <input
+                  id="cashValue"
+                  type="number"
+                  placeholder="Amount"
+                  class="w-24 p-1 text-black"
+                  required
+                />
+                <button class="border px-2">Add</button>
+              </form>
+              <ul id="cashList" class="text-sm space-y-1"></ul>
+              <p class="text-sm">Total: <span id="cashTotal">0</span></p>
+            </div>
+          </section>
+
+          <!-- EXPENSES -->
+          <section>
+            <div class="flex justify-between items-center mb-2">
+              <h3 class="text-sm font-medium">Expenses</h3>
+              <button data-toggle="expenses" class="text-slate-400">−</button>
+            </div>
+            <div id="expensesSection">
+              <form id="expensesForm" class="flex gap-2 mb-2">
+                <input
+                  id="expensesName"
+                  placeholder="Item"
+                  class="w-full p-1 text-black"
+                  required
+                />
+                <input
+                  id="expensesValue"
+                  type="number"
+                  placeholder="Amount"
+                  class="w-24 p-1 text-black"
+                  required
+                />
+                <button class="border px-2">Add</button>
+              </form>
+              <ul id="expensesList" class="text-sm space-y-1"></ul>
+              <p class="text-sm">Total: <span id="expensesTotal">0</span></p>
+            </div>
+          </section>
+
+          <!-- EQUITY -->
+          <section>
+            <div class="flex justify-between items-center mb-2">
+              <h3 class="text-sm font-medium">Equity</h3>
+              <button data-toggle="equity" class="text-slate-400">−</button>
+            </div>
+            <div id="equitySection">
+              <form id="equityForm" class="flex gap-2 mb-2">
+                <input
+                  id="equityName"
+                  placeholder="Asset"
+                  class="w-full p-1 text-black"
+                  required
+                />
+                <input
+                  id="equityValue"
+                  type="number"
+                  placeholder="Value"
+                  class="w-24 p-1 text-black"
+                  required
+                />
+                <button class="border px-2">Add</button>
+              </form>
+              <ul id="equityList" class="text-sm space-y-1"></ul>
+              <p class="text-sm">Total: <span id="equityTotal">0</span></p>
+            </div>
+          </section>
+
+          <!-- DEBT -->
+          <section>
+            <div class="flex justify-between items-center mb-2">
+              <h3 class="text-sm font-medium">Debt</h3>
+              <button data-toggle="debt" class="text-slate-400">−</button>
+            </div>
+            <div id="debtSection">
+              <form id="debtForm" class="flex gap-2 mb-2">
+                <input
+                  id="debtName"
+                  placeholder="Liability"
+                  class="w-full p-1 text-black"
+                  required
+                />
+                <input
+                  id="debtValue"
+                  type="number"
+                  placeholder="Amount"
+                  class="w-24 p-1 text-black"
+                  required
+                />
+                <button class="border px-2">Add</button>
+              </form>
+              <ul id="debtList" class="text-sm space-y-1"></ul>
+              <p class="text-sm">Total: <span id="debtTotal">0</span></p>
+            </div>
+          </section>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="border-t border-slate-700 p-4 bg-slate-900 sticky bottom-0">
+          <p>
+            Cash − Expenses:
+            <span id="result"></span>
+          </p>
+          <p>
+            Net Worth (Equity − Debt):
+            <span id="netWorth"></span>
+          </p>
+        </div>
       </div>
-      <hr class="border-t border-gray-300 my-4" />
+    </div>
 
-      <p>TOTAL (Cash - Bills - Expenses) = <span id="finalTotal">0</span></p>
-      <p>SUBTOTAL (After Debts): <span id="subtotal">0</span></p>
+    <!-- JS -->
+    <script>
+      /* ---------- TITLE + CURRENCY ---------- */
 
-      <hr class="border-t border-gray-300 my-4" />
+      const titleContainer = document.getElementById("titleContainer");
 
-      <div id="columns" class="flex flex-col gap-6">
-        <div>
-          <h3 class="font-semibold mb-2">Cash</h3>
-          <form id="cashForm" class="flex gap-2 mb-2">
-            <input
-              type="text"
-              id="cashName"
-              placeholder="Name"
-              required
-              class="border p-1 w-32 text-black"
-            />
-            <input
-              type="number"
-              id="cashValue"
-              placeholder="Amount"
-              required
-              class="border p-1 w-24 text-black"
-            />
-            <button type="submit" class="px-2 py-1 border">Add</button>
-          </form>
-          <ul id="cashList" class="space-y-1"></ul>
-          <p>Total Cash: <span id="cashTotal">0</span></p>
-        </div>
+      let savedTitle = localStorage.getItem("snapshotTitle");
+      let currency = localStorage.getItem("currency") || "USD";
 
-        <div>
-          <h3 class="font-semibold mb-2">Bills</h3>
-          <form id="billsForm" class="flex gap-2 mb-2">
-            <input
-              type="text"
-              id="billsName"
-              placeholder="Name"
-              required
-              class="border p-1 w-32 text-black"
-            />
-            <input
-              type="number"
-              id="billsValue"
-              placeholder="Amount"
-              required
-              class="border p-1 w-24 text-black"
-            />
-            <button type="submit" class="px-2 py-1 border">Add</button>
-          </form>
-          <ul id="billsList" class="space-y-1"></ul>
-          <p>Total Bills: <span id="billsTotal">0</span></p>
-        </div>
+      function formatMoney(value) {
+        return new Intl.NumberFormat(currency === "USD" ? "en-US" : "pt-BR", {
+          style: "currency",
+          currency,
+          minimumFractionDigits: 2,
+        }).format(value);
+      }
 
-        <div>
-          <h3 class="font-semibold mb-2">Expenses</h3>
-          <form id="expensesForm" class="flex gap-2 mb-2">
-            <input
-              type="text"
-              id="expensesName"
-              placeholder="Name"
-              required
-              class="border p-1 w-32 text-black"
-            />
-            <input
-              type="number"
-              id="expensesValue"
-              placeholder="Amount"
-              required
-              class="border p-1 w-24 text-black"
-            />
-            <button type="submit" class="px-2 py-1 border">Add</button>
-          </form>
-          <ul id="expensesList" class="space-y-1"></ul>
-          <p>Total Expenses: <span id="expensesTotal">0</span></p>
-        </div>
+      function renderTitle() {
+        titleContainer.innerHTML = "";
 
-        <div>
-          <h3 class="font-semibold mb-2">Debts</h3>
-          <form id="debtsForm" class="flex gap-2 mb-2">
-            <input
-              type="text"
-              id="debtsName"
-              placeholder="Name"
-              required
-              class="border p-1 w-32 text-black"
-            />
-            <input
-              type="number"
-              id="debtsValue"
-              placeholder="Amount"
-              required
-              class="border p-1 w-24 text-black"
-            />
-            <button type="submit" class="px-2 py-1 border">Add</button>
-          </form>
-          <ul id="debtsList" class="space-y-1"></ul>
-          <p>Total Debts: <span id="debtsTotal">0</span></p>
-        </div>
-      </div>
-
-      <script>
-        const categories = ["cash", "bills", "expenses", "debts"];
-        const data = JSON.parse(localStorage.getItem("monthlyData")) || {
-          cash: [],
-          bills: [],
-          expenses: [],
-          debts: [],
+        const currencySelect = document.createElement("select");
+        currencySelect.className = "text-black p-1 text-sm";
+        currencySelect.innerHTML = `
+          <option value="USD">USD ($)</option>
+          <option value="BRL">BRL (R$)</option>
+        `;
+        currencySelect.value = currency;
+        currencySelect.onchange = () => {
+          currency = currencySelect.value;
+          localStorage.setItem("currency", currency);
+          updateUI();
         };
 
-        function updateUI() {
-          categories.forEach((cat) => {
-            const list = document.getElementById(`${cat}List`);
-            list.innerHTML = "";
+        if (savedTitle) {
+          const h1 = document.createElement("h1");
+          h1.textContent = savedTitle;
+          h1.className = "text-lg font-medium";
 
-            data[cat].forEach((item, index) => {
-              const li = document.createElement("li");
-              li.textContent = `${item.name}: ${item.value}`;
+          const edit = document.createElement("button");
+          edit.textContent = "Edit";
+          edit.className = "text-sm text-slate-400";
+          edit.onclick = () => {
+            savedTitle = null;
+            localStorage.removeItem("snapshotTitle");
+            renderTitle();
+          };
 
-              if (item.paid) {
-                li.classList.add("italic", "line-through", "opacity-70");
-              }
-              // TODO: Remove 'Paid' btn from Cash section
-              const editBtn = document.createElement("button");
-              editBtn.textContent = "Edit";
-              editBtn.className = "border px-1";
+          titleContainer.append(h1, edit, currencySelect);
+        } else {
+          const input = document.createElement("input");
+          input.placeholder = "December 2025";
+          input.className = "p-1 text-black";
 
-              editBtn.onclick = () => {
-                document.getElementById(`${cat}Name`).value = item.name;
-                document.getElementById(`${cat}Value`).value = item.value;
-                data[cat].splice(index, 1);
-                saveData();
-                updateUI();
-              };
+          const save = document.createElement("button");
+          save.textContent = "Save";
+          save.className = "border px-2 text-sm";
+          save.onclick = () => {
+            if (!input.value.trim()) return;
+            savedTitle = input.value.trim();
+            localStorage.setItem("snapshotTitle", savedTitle);
+            renderTitle();
+          };
 
-              const removeBtn = document.createElement("button");
-              removeBtn.textContent = "Remove";
-              removeBtn.className = "border px-1";
+          titleContainer.append(input, save, currencySelect);
+        }
+      }
 
-              removeBtn.onclick = () => {
-                data[cat].splice(index, 1);
-                saveData();
-                updateUI();
-              };
+      renderTitle();
 
-              const paidBtn = document.createElement("button");
-              paidBtn.textContent = item.paid ? "Unpaid" : "Paid";
-              paidBtn.className = "border px-1";
+      /* ---------- FINANCIAL LOGIC ---------- */
 
-              paidBtn.onclick = () => {
-                item.paid = !item.paid;
-                saveData();
-                updateUI();
-              };
+      const categories = ["cash", "expenses", "equity", "debt"];
 
-              const btnBox = document.createElement("span");
-              btnBox.className = "float-right space-x-2";
-              btnBox.append(editBtn, removeBtn, paidBtn);
+      const data = JSON.parse(localStorage.getItem("snapshotData")) || {
+        cash: [],
+        expenses: [],
+        equity: [],
+        debt: [],
+      };
 
-              li.append(btnBox);
-              list.appendChild(li);
-            });
+      function save() {
+        localStorage.setItem("snapshotData", JSON.stringify(data));
+      }
 
-            const total = data[cat]
-              .filter((i) => !i.paid)
-              .reduce((s, i) => s + Number(i.value), 0);
+      function sum(cat) {
+        return data[cat].reduce((s, i) => s + Number(i.value), 0);
+      }
 
-            document.getElementById(`${cat}Total`).textContent =
-              total.toFixed(2);
+      function updateUI() {
+        categories.forEach((cat) => {
+          const list = document.getElementById(cat + "List");
+          list.innerHTML = "";
+
+          data[cat].forEach((item, index) => {
+            const li = document.createElement("li");
+            li.textContent = `${item.name}: ${formatMoney(item.value)}`;
+
+            const remove = document.createElement("button");
+            remove.textContent = "×";
+            remove.className = "float-right text-slate-400";
+            remove.onclick = () => {
+              data[cat].splice(index, 1);
+              save();
+              updateUI();
+            };
+
+            li.appendChild(remove);
+            list.appendChild(li);
           });
 
-          const cash = sum("cash");
-          const bills = sum("bills");
-          const expenses = sum("expenses");
-          const debts = sum("debts");
-
-          const final = cash - (bills + expenses);
-          const subtotal = final - debts;
-
-          document.getElementById("finalTotal").textContent = final.toFixed(2);
-          document.getElementById("subtotal").textContent = subtotal.toFixed(2);
-        }
-
-        function sum(cat) {
-          return data[cat]
-            .filter((i) => !i.paid)
-            .reduce((s, i) => s + Number(i.value), 0);
-        }
-
-        function saveData() {
-          localStorage.setItem("monthlyData", JSON.stringify(data));
-        }
-
-        categories.forEach((cat) => {
-          document
-            .getElementById(`${cat}Form`)
-            .addEventListener("submit", (e) => {
-              e.preventDefault();
-              const name = document.getElementById(`${cat}Name`).value.trim();
-              const value = Number(
-                document.getElementById(`${cat}Value`).value
-              );
-              if (name && !isNaN(value)) {
-                data[cat].push({ name, value });
-                document.getElementById(`${cat}Form`).reset();
-                saveData();
-                updateUI();
-              }
-            });
+          document.getElementById(cat + "Total").textContent = formatMoney(
+            sum(cat)
+          );
         });
 
-        document.getElementById("exportBtn").onclick = () => {
-          let text = "";
+        document.getElementById("result").textContent = formatMoney(
+          sum("cash") - sum("expenses")
+        );
 
-          const d = new Date().toDateString();
+        document.getElementById("netWorth").textContent = formatMoney(
+          sum("equity") - sum("debt")
+        );
+      }
 
-          text += `Pocketbook Report for ${d}\n\n`;
-
-          categories.forEach((cat) => {
-            text += `${cat.toUpperCase()}:\n`;
-            data[cat].forEach((i) => (text += `${i.name}: ${i.value}\n`));
-            text += `Total ${cat}: ${sum(cat)}\n\n`;
-          });
-
-          const final = sum("cash") - (sum("bills") + sum("expenses"));
-          const subtotal = final - sum("debts");
-
-          text += `Final Total: ${final}\nSubtotal (After Debts): ${subtotal}`;
-
-          const url = "https://wa.me/?text=" + encodeURIComponent(text);
-          window.open(url, "_blank");
+      categories.forEach((cat) => {
+        document.getElementById(cat + "Form").onsubmit = (e) => {
+          e.preventDefault();
+          const name = document.getElementById(cat + "Name").value.trim();
+          const value = Number(document.getElementById(cat + "Value").value);
+          if (!name || isNaN(value)) return;
+          data[cat].push({ name, value });
+          e.target.reset();
+          save();
+          updateUI();
         };
+      });
 
-        updateUI();
-      </script>
-    </div>
+      document.querySelectorAll("[data-toggle]").forEach((btn) => {
+        btn.onclick = () => {
+          const section = document.getElementById(
+            btn.dataset.toggle + "Section"
+          );
+          section.classList.toggle("hidden");
+          btn.textContent = section.classList.contains("hidden") ? "+" : "−";
+        };
+      });
+
+      updateUI();
+    </script>
   </body>
 </html>
